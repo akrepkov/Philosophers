@@ -17,8 +17,8 @@ void	*write_message(void *ph)
 	t_philo	*philosopher;
 
 	philosopher = (t_philo *)ph;
-	t_time	*timer;
-	timer = philosopher->timer;
+	// t_time	*timer;
+	// timer = philosopher->timer;
 	// printf("WRITE CHECK\n");
 	//if (forks are available) - > ph is eating;
     pthread_mutex_lock(philosopher->right_fork); //here should be fork mutex
@@ -36,6 +36,30 @@ void	*write_message(void *ph)
 	pthread_mutex_unlock(philosopher->left_fork);
     // Exit the thread ?
     // pthread_exit(NULL);
+
+**** if (philosopher->thread_id % 2 == 0)
+	{
+	printf("Philosopher %d is thinking\n", timer->thread_id);
+	usleep **********;
+}
+	while (1)
+	{
+		if (ft_check_died(philosopher)) ->lock mutex[died], check philosopher->timer->died, unlock mutex[died] and return boolian
+			break ;
+		if (ft_eating (philosopher) != SUCCESS) -> Here we have functions:
+		//1. start eating - > mutex_lock &philosopher->fork[ft_min R, L]; after that ft_max
+			//print - taken a fork;
+		//2. lock mutex[meals];
+		//philosopher->last_meal = ft_abs_time;
+		//meals_counter++;
+		//3. ft_check_done - the same as died;
+		//4. finish_eating - unlock forks
+			// print - is sleeping
+			// sleep 
+			break ;
+		printf("Philosopher %d is thinking\n", timer->thread_id);
+		usleep **********;
+	}
 	return (NULL); //don't need it
 }
 

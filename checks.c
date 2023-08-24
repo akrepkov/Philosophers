@@ -56,15 +56,16 @@ void	make_rules(t_philo *ph, t_time *timer) //**ph a pointer to s_philo struct s
 	while (i < timer->philo)
 	{
 		(*ph)[i].thread_id = i + 1; // if  I use a pointer to the struct (**ph), 
-		(*ph)[i].last_meal = timer->simbegin;
+		(*ph)[i].last_meal = timer->start;
 		(*ph)[i].meals_counter = 0;
 		(*ph)[i].left_fork = i;
 		if (i - 1 < 0)
-			(*philo)[i].rfork = data->philo_nb - 1;
+			(*philo)[i].right_fork = timer->philo - 1;
 		else
-			(*philo)[i].rfork = i - 1;
+			(*philo)[i].right_fork = i - 1;
 		(*philo)[i].fork = fork;
-		(*philo)[i].data = data;
+		(*philo)[i].timer = timer;
+		i++;
 	}
 
 }
@@ -74,14 +75,11 @@ void	create_threads(t_philo *ph, t_time *timer) //to change everything in main w
 	int	i;
 
 	i = 0;
-	// t_time	*check;
-	// check = ph->timer;
-	// printf("Time to eat: %d\n", 1);
-
-	// printf("Time to eat: %d\n", &(check->to_eat));
+**** pthread_t	*thread;
+thread = malloc (sizeof (pthread_t) * (size_t)data->philo_nb); //protect
 	while (i < timer->philo) //change
 	{
-		if (pthread_create(&ph[i].thread, NULL, &write_message, &(ph[i])) != 0) //protect
+		if (pthread_create(&thread[i], NULL, &write_message, (void *)&(ph[i])) != 0) //protect *** do I need void here?
 			perror("Problem with creating thread"); //not allowed to use?
 		i++;
 	}
@@ -116,6 +114,32 @@ void	create_mutex(t_philo *ph, t_time *timer)
 		i++;
 	}
 	timer->msg_mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)); //protect
+}
+****
+
+int	ft_init_data_mutexes(t_data **data)
+{
+	pthread_mutex_t	*mutex;
+	int				i;
+
+	mutex = malloc (sizeof (pthread_mutex_t) * ((size_t)M_NUM)); //what is M_NUM
+	/*check: /* Simulator's mutexes 
+	typedef enum e_mutexes
+	{
+		PRINT,
+		MEALS,
+		DONE,
+		DIED,
+		M_NUM
+	}	t_mutexes;*/
+	
+	if (mutex == NULL)
+		return (FAILURE);
+	i = 0;
+	while (i < M_NUM)
+		pthread_mutex_init (&mutex[i++], NULL);
+	(*timer)->mutex = mutex;
+	return (SUCCESS);
 }
 
 void	destroy_mutex(t_philo *ph, t_time *timer)

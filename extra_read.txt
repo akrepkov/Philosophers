@@ -1,0 +1,30 @@
+sys/time.h
+Gettimeofday: int gettimeofday(struct timeval *tv, struct timezone *tz);
+
+Get time and timezone.
+
+The tv argument is a struct that gives the number of sec and ms since the Epoch:
+
+struct timeval {
+    time_t      tv_sec;     /* seconds */
+    suseconds_t tv_usec;    /* microseconds */
+};
+The tz argument is obsolete and should be specified as NULL.
+
+pthread.h
+Threads are used to create multitasking programs.
+Compared to fork, a thread is 30 times faster.
+The number of simultaneous threads is limited to PTHREAD_THREADS_MAX.
+Pthread_create: int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);
+Compile and link with -pthread.
+Starts a new thread in the calling process. The new thread starts execution by invoking start_routine() with arg, its sole argument.
+The new thread terminates if:
+It returns from start_routine() (same as a pthread_exit(3)) specifying an exit status value available to another thread in the same process that calls pthread_join(3).
+Any of the process threads calls exit(3), or the main thread performs a return from main(). -> Causes the termination of all threads in the process.
+The attr argument points to a pthread_attr_t structure whose contents are used at thread creation time to determine attributes for the new thread. If attr is NULL, then the thread is created with default attributes.
+Before returning, a successful call to pthread_create() stores the ID of the new thread in the buffer pointed to by thread; this identifier is used to refer to the thread.
+Returns 0 otherwise an error number: (and *thread contents are undefined) EAGAIN Insufficient resources to create another thread.
+
+If the mutex is already locked by the calling thread, the behavior of pthread_mutex_lock depends on the kind of the mutex. If the mutex is of the "fast" kind, the calling thread is suspended until the mutex is unlocked, thus effectively causing the calling thread to deadlock. If the mutex is of the "error checking" kind, pthread_mutex_lock returns immediately with the error code EDEADLK. If the mutex is of the "recursive" kind, pthread_mutex_lock succeeds and returns immediately, recording the number of times the calling thread has locked the mutex. An equal number of pthread_mutex_unlock operations must be performed before the mutex returns to the unlocked state.
+
+Return 0 on success and a non-zero on error. EINVAL the mutex has not been properly initialized. EDEADLK the mutex is already locked by the calling thread ("error checking" mutexes only).

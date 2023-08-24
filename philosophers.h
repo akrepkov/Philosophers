@@ -30,6 +30,7 @@ typedef struct s_time
 
 **** int done;
 **** int died;
+****long long start; //read about EPOCH and The elapsed time since EPOCH in millisecond.
 }	t_time;
 
 typedef struct s_philo

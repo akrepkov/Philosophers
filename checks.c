@@ -12,8 +12,9 @@
 
 #include "philosophers.h"
 
-void	check_argv(int argc, char **argv, t_time *timer)
+void	check_argv(int argc, char **argv, t_time *timer) // try to use pointer to a struct - in main it's &timer, here **timer. In this case (*timer)->start....
 {
+****	timer->start = ft_abs_time(); //use struct timeval, next gettinmeofday, after that learn about: s = time.tv_sec*1000; u = time.tv_usec/1000, return (s+u);
 	timer->philo = ft_atoi(argv[1]);
 	if (!timer->philo || timer->philo < 1)
 		return ;
@@ -30,6 +31,11 @@ void	check_argv(int argc, char **argv, t_time *timer)
 	}
 	else
 		timer->amount = -1;
+****
+	(*timer)->done = FALSE; //add boolian
+	(*timer)->died = FALSE;
+
+	
 	printf("CHECK \n"); //delete
 	printf("philo %d\n", timer->philo);
 	printf("to_die %d\n", timer->to_die);
@@ -37,25 +43,33 @@ void	check_argv(int argc, char **argv, t_time *timer)
 	printf("to_sleep %d\n", timer->to_sleep);
 }
 
-void	make_rules(t_philo *ph, t_time *timer)
+void	make_rules(t_philo *ph, t_time *timer) //**ph a pointer to s_philo struct set to NULL, *timer a pointer to an initialized s_timer struct.
 {
+	**** pthread_mutex_t	*fork; //?????????????????? allocate memory fork = malloc(sizeof(pthread_mutex_t) * ((size_t)data->philo_nb)); and protect
 	int	i;
+
+	i = 0;
+****	while (i < timer->philo)
+		pthread_mutex_init (&fork[i++], NULL); //WTF?
 
 	i = 0;
 	while (i < timer->philo)
 	{
-		ph[i].thread_id = i + 1;
-		ph[i].right_fork = ph[i].mutex;
-		if (i == timer->philo - 1)
-			ph[i].left_fork = ph[0].mutex;
+		(*ph)[i].thread_id = i + 1; // if  I use a pointer to the struct (**ph), 
+		(*ph)[i].last_meal = timer->simbegin;
+		(*ph)[i].meals_counter = 0;
+		(*ph)[i].left_fork = i;
+		if (i - 1 < 0)
+			(*philo)[i].rfork = data->philo_nb - 1;
 		else
-			ph[i].left_fork = ph[i + 1].mutex;
-		i++;
+			(*philo)[i].rfork = i - 1;
+		(*philo)[i].fork = fork;
+		(*philo)[i].data = data;
 	}
 
 }
 
-void	create_threads(t_philo *ph, t_time *timer) //something is wrong with mutex and passing arg
+void	create_threads(t_philo *ph, t_time *timer) //to change everything in main we need to use **
 {
 	int	i;
 
@@ -116,3 +130,5 @@ void	destroy_mutex(t_philo *ph, t_time *timer)
 		i++;
 	}
 }
+
+IF WE NEED TO CHANGE - WE ADD & in calling, or * in declaration (we need pointer to do it). IF we just use info - no pointers needed (we send a copy of variable)

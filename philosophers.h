@@ -27,6 +27,9 @@ typedef struct s_time
 	int	amount;
 	pthread_mutex_t	*msg_mutex;
 
+
+**** int done;
+**** int died;
 }	t_time;
 
 typedef struct s_philo
@@ -39,6 +42,14 @@ typedef struct s_philo
 	pthread_mutex_t	*mutex_left;
 	struct s_time	*timer;
 
+**** the only ones that I need:
+int		id;
+long long	last_meal; //last_meal the Epoch time of the last meal eaten.
+int		left_fork; // meals_counter the number of meals eaten.
+int		right_fork;
+pthread_mutex_t	*fork; //fork a mutex that symbolize one fork from philos dining problem.
+t_time		*timer;
+****
 
 }	t_philo;
 

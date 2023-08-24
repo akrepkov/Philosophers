@@ -46,6 +46,8 @@ int	main(int argc, char **argv)
 	t_time	*timer;
 	// pthread_mutex_t *mutex;
 
+****	timer = NULL;
+****	ph = NULL:
 	if (argc < 5 || argc > 6)
 		return (0); //what do we return?
 	timer = (t_time *)malloc(sizeof(t_time)); //free

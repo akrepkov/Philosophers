@@ -63,7 +63,8 @@ int	main(int argc, char **argv)
 
 	// Initialize the mutex
 	// pthread_mutex_init(ph->mutex, NULL);
-	create_threads(ph, timer);
+	create_threads(ph, timer);// using & lets you give the function the ability to modify the original variables and not just copies of them.
+****	//thats's why we need to pass &ph and &timer
 
     // // Destroy the mutex
     destroy_mutex(ph, timer);

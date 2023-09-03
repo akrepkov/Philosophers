@@ -6,7 +6,7 @@
 /*   By: akrepkov <akrepkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 14:31:43 by akrepkov          #+#    #+#             */
-/*   Updated: 2023/08/16 14:24:46 by akrepkov         ###   ########.fr       */
+/*   Updated: 2023/09/03 19:23:05 by akrepkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,51 +15,68 @@
 
 # include <stdio.h>
 # include <stdlib.h>
-# include <unistd.h>//Header file for sleep(). man 3 sleep for details.
-# include <pthread.h>//check headers
+# include <unistd.h> //Header file for sleep(). man 3 sleep for details.
+# include <pthread.h> //check headers
+# include <sys/time.h> // for gettimeofday
 
-typedef struct s_time
+
+
+typedef struct s_philo
+{
+	int id;
+	long long	countdown;
+	struct s_data *data;
+
+}	t_philo;
+
+
+
+struct s_data
 {
 	int	philo;
 	int	to_die;
 	int	to_eat;
 	int	to_sleep;
-	int	amount;
-	pthread_mutex_t	*msg_mutex;
+	int done;
+	int dead;
+	long long	start_time;
+	long long	current_time;
+	pthread_mutex_t	fork[201];
+	pthread_t		thread[201];
+	pthread_mutex_t	msg_mutex;
+	pthread_mutex_t die_mutex;
+	t_philo	philosopher[201];
+	//start; //read about EPOCH and The elapsed time since EPOCH in millisecond.
+};
 
 
-**** int done;
-**** int died;
-****long long start; //read about EPOCH and The elapsed time since EPOCH in millisecond.
-}	t_time;
 
-typedef struct s_philo
-{
-	pthread_mutex_t	*mutex;
-	int				thread_id;
-	pthread_mutex_t				*right_fork;
-	pthread_mutex_t				*left_fork;
-	pthread_t		thread;
-	pthread_mutex_t	*mutex_left;
-	struct s_time	*timer;
 
-**** the only ones that I need:
-int		id;
-long long	last_meal; //last_meal the Epoch time of the last meal eaten.
-int		left_fork; // meals_counter the number of meals eaten.
-int		right_fork;
-pthread_mutex_t	*fork; //fork a mutex that symbolize one fork from philos dining problem.
-t_time		*timer;
-****
-
-}	t_philo;
-
-void	check_argv(int argc, char **argv, t_time *timer);
-void	*write_message(void *ph);
-void	create_threads(t_philo *ph, t_time *timer);
-void	create_mutex(t_philo *phi, t_time *timer);
+void	check_argv(int argc, char **argv, struct s_data *data);
+void	create_mutex(struct s_data *data);
+// void	make_rules(t_main *ph,  struct s_data *data);
+// void	create_mutex(t_time **timer);
 int		ft_atoi(char *nptr);
-void	make_rules(t_philo *ph, t_time *timer);
-void	destroy_mutex(t_philo *ph, t_time *timer);
+void	create_threads(struct s_data *data);
+void	*write_message(void *ph);
+void	destroy_mutex(struct s_data *data);
+void	sleeping(t_philo *ph);
+void	thinking(t_philo *ph, int time);
+void	eating(t_philo *ph);
+long long	start_time(void);
+long long	timestamp_time(struct s_data *data);
+void	init_philosophers(struct s_data *data);
+void	check_dead(struct s_data *data);
 
 #endif
+
+
+// 	/*check:  mutexes 
+// 	typedef enum e_mutexes
+// 	{
+// 		PRINT,
+// 		MEALS,
+// 		DONE,
+// 		DIED,
+// 		M_NUM
+// 	}	t_mutexes;*/

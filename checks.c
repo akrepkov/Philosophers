@@ -6,7 +6,7 @@
 /*   By: akrepkov <akrepkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 18:38:34 by akrepkov          #+#    #+#             */
-/*   Updated: 2023/09/03 19:33:18 by akrepkov         ###   ########.fr       */
+/*   Updated: 2023/09/09 17:18:16 by akrepkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,29 +37,38 @@ void	check_argv(int argc, char **argv, struct s_data *data)
 	data->dead = 1;
 }
 
-void	check_dead(struct s_data *data) //doesn't work
+void	*check_dead(void *val) //doesn't work
 {
+	struct s_data	*data;
 	long long	current;
 	int i;
 
 	i = 0;
+	data = (struct s_data *) val;
 	while(i < data->philo)
 	{
-		current = start_time() - data->philosopher[i].countdown;
-		// printf ("start_time(): %lld\n", start_time());
-		// printf ("countdown: %lld\n", data->philosopher[i].countdown);
-		// printf ("Current: %lld\n", current);
+		current = current_time(data) - data->philosopher[i].countdown;
+		//printf ("\n%i\ncurrent_time(): %lld\n",i, current_time());
+		// printf ("Start of the programe: %lld\n", data->start_time);
+		// printf ("countdown in the dead check: %lld\n", data->philosopher[i].countdown);
+		// printf ("Current: %lld\n\n", current);
 		// printf ("To die: %d\n", data->to_die);
-		if ((int)current < data->to_die)
+		if ((long long)current > (long long)data->to_die)
 		{
 			data->dead = 0;
+			// pthread_mutex_lock(&data->msg_mutex); //do I need it?
+			// // printf("CHECK: %d on philosopher: %d\n", data->dead, data->philosopher[i].id);
+			// pthread_mutex_unlock(&data->msg_mutex);
 			//clean everything 
-			return ;
+			//perror("Somebody died"); //don't need it
+			// cleaning(data);
+			break;
 		}
+		usleep (50);
 		i++;
 	}
 
-	
+	return (NULL); //don't need it
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: akrepkov <akrepkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 14:31:43 by akrepkov          #+#    #+#             */
-/*   Updated: 2023/09/03 19:23:05 by akrepkov         ###   ########.fr       */
+/*   Updated: 2023/09/09 18:02:35 by akrepkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 typedef struct s_philo
 {
 	int id;
+	int	done;
 	long long	countdown;
 	struct s_data *data;
 
@@ -40,7 +41,7 @@ struct s_data
 	int done;
 	int dead;
 	long long	start_time;
-	long long	current_time;
+	// long long	current_time;
 	pthread_mutex_t	fork[201];
 	pthread_t		thread[201];
 	pthread_mutex_t	msg_mutex;
@@ -57,16 +58,20 @@ void	create_mutex(struct s_data *data);
 // void	make_rules(t_main *ph,  struct s_data *data);
 // void	create_mutex(t_time **timer);
 int		ft_atoi(char *nptr);
-void	create_threads(struct s_data *data);
-void	*write_message(void *ph);
-void	destroy_mutex(struct s_data *data);
+int		create_threads(struct s_data *data);
+void	*start_actions(void *ph);
+// void	destroy_mutex(struct s_data *data);
 void	sleeping(t_philo *ph);
-void	thinking(t_philo *ph, int time);
+void	thinking(t_philo *ph);
 void	eating(t_philo *ph);
-long long	start_time(void);
+long long	current_time(struct s_data *data);
 long long	timestamp_time(struct s_data *data);
 void	init_philosophers(struct s_data *data);
-void	check_dead(struct s_data *data);
+void	*check_dead(void *val);
+void	cleaning(struct s_data *data);
+void	write_message(t_philo *ph, int action);
+void	thread_issue(struct s_data *data, int count);
+
 
 #endif
 

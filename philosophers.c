@@ -6,29 +6,33 @@
 /*   By: akrepkov <akrepkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 15:25:57 by akrepkov          #+#    #+#             */
-/*   Updated: 2023/09/03 18:53:24 by akrepkov         ###   ########.fr       */
+/*   Updated: 2023/09/09 18:14:11 by akrepkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	*write_message(void *ph)
+void	*start_actions(void *ph)
 {
 	t_philo	*philosopher;
-	int i = 10;
 
 	philosopher = (t_philo *)ph;
 	if (philosopher->id % 2 == 0)
-		thinking (philosopher, philosopher->data->to_eat);
-	while (philosopher->data->dead != 2 && philosopher->data->done != 0 && i > 0)
+		usleep (50);
+	while (philosopher->done != 0)
 	{
 		eating(philosopher);
-		sleeping(philosopher);
-		thinking(philosopher, 0);
+		pthread_mutex_lock(&philosopher->data->die_mutex);
 		check_dead(philosopher->data);
-		printf("CHECK: %d\n", philosopher->data->dead);
-		philosopher->data->done--;
-		i--;
+		if (philosopher->data->dead == 0)
+			perror ("DEAD");
+		pthread_mutex_unlock(&philosopher->data->die_mutex);
+		sleeping(philosopher);
+		// check_dead(philosopher->data);
+		thinking(philosopher);
+		// check_dead(philosopher->data);
+		usleep (50);
+		philosopher->done--;
 	}
 
 
@@ -46,7 +50,7 @@ int	main(int argc, char **argv)
 	init_philosophers(&data);
 	create_mutex(&data);
 	create_threads(&data);
-
+	cleaning(&data);
     // destroy_mutex(&ph);
     return 0;
 }

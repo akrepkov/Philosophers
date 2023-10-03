@@ -6,42 +6,31 @@
 /*   By: akrepkov <akrepkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 18:38:34 by akrepkov          #+#    #+#             */
-/*   Updated: 2023/07/29 16:51:10 by akrepkov         ###   ########.fr       */
+/*   Updated: 2023/09/16 15:54:14 by akrepkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	*ft_memset(void *str, int n)//do you need it?
-{
-	char	*p;
-	int		c;
-
-	c = 1;
-	p = str;
-	while (n != 0)
-	{
-		*p = c;
-		n--;
-		c++;
-	}
-	return (str);
-}
-
-int	ft_atoi(char *nptr) //doesn't work
+int	ft_atoi(char *nptr)
 {
 	int			i;
 	long long	num;
 
 	i = 0;
 	num = 0;
-
+	if (!nptr)
+		return (-1);
+	if (nptr[0] == '+')
+		i++;
 	while (nptr[i])
 	{
+		if (nptr[i] > '9' || nptr[i] < '0')
+			return (-1);
 		if (nptr[i] >= '0' && nptr[i] <= '9' && nptr[i])
 			num = num * 10 + nptr[i] - '0';
-		if ((nptr[i] > '9' || nptr[i] < '0') && nptr[i] != '+')
-			perror("Problem with numbers, check atoi"); //fix
+		else
+			return (-1);
 		i++;
 	}
 	return (num);

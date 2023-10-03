@@ -6,7 +6,7 @@
 /*   By: akrepkov <akrepkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 15:25:57 by akrepkov          #+#    #+#             */
-/*   Updated: 2023/09/09 18:14:11 by akrepkov         ###   ########.fr       */
+/*   Updated: 2023/10/01 21:02:48 by akrepkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,58 +17,45 @@ void	*start_actions(void *ph)
 	t_philo	*philosopher;
 
 	philosopher = (t_philo *)ph;
-	if (philosopher->id % 2 == 0)
-		usleep (50);
-	while (philosopher->done != 0)
+	if (philosopher->id % 2 == 1)
+		usleep (philosopher->data->to_eat * 50);
+	while (1)
 	{
 		eating(philosopher);
-		pthread_mutex_lock(&philosopher->data->die_mutex);
-		check_dead(philosopher->data);
-		if (philosopher->data->dead == 0)
-			perror ("DEAD");
-		pthread_mutex_unlock(&philosopher->data->die_mutex);
+		if (check_dead(philosopher) != 0)
+			return (NULL);
+		if (philosopher->done == 0)
+			return (NULL);
 		sleeping(philosopher);
-		// check_dead(philosopher->data);
+		if (check_dead(philosopher) != 0)
+			return (NULL);
 		thinking(philosopher);
-		// check_dead(philosopher->data);
-		usleep (50);
-		philosopher->done--;
+		if (check_dead(philosopher) != 0)
+			return (NULL);
 	}
-
-
-	return (NULL); //don't need it
+	return (NULL);
 }
 
-
-int	main(int argc, char **argv) 
+int	main(int argc, char **argv)
 {
 	struct s_data	data;
 
 	if (argc < 5 || argc > 6)
-		return (0); //what do we return?
-	check_argv(argc, argv, &data);
+		return (0);
+	if (check_argv(argc, argv, &data) != 0)
+		return (0);
 	init_philosophers(&data);
-	create_mutex(&data);
-	create_threads(&data);
-	cleaning(&data);
-    // destroy_mutex(&ph);
-    return 0;
+	if (data.philo == 1)
+	{
+		printf("%lld %d has taken a fork\n", timestamp_time(&data), 1);
+		my_sleep(data.to_eat);
+		printf("%lld %d died\n", timestamp_time(&data), 1);
+		return (0);
+	}
+	if (create_mutex(&data) != 0)
+		return (0);
+	if (create_threads(&data) != 0)
+		return (0);
+	cleaning(&data, data.philo, 4);
+	return (0);
 }
-/*
-PLAN
-- 1 philosopher
-- status (dead/alive)
-- timestamp
-- write own sleep
-- test on uneven numbers
-- change perror
-- add dead check and done check
-- destroy and clean after death
-
-
-
-
-
-
-
-*/

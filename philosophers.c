@@ -48,7 +48,7 @@ int	main(int argc, char **argv)
 	if (data.philo == 1)
 	{
 		printf("%lld %d has taken a fork\n", timestamp_time(&data), 1);
-		my_sleep(data.to_eat);
+		my_sleep(data.to_die);
 		printf("%lld %d died\n", timestamp_time(&data), 1);
 		return (0);
 	}
